@@ -93,7 +93,10 @@ class JSONEncoderAdapter(simplejson.JSONEncoder):
 
         If the encoder is unable to encode this object, a TypeError is raised.
         """
-        result = self.encoder.encode(o, *self.encode_args, **self.encode_kwargs)
+        if isinstance(o, NameArray):
+            result = o.Array
+        else:
+            result = self.encoder.encode(o, *self.encode_args, **self.encode_kwargs)
 
         if result is None:
             raise TypeError("%r is not JSON serializable" % (o,))
@@ -158,6 +161,18 @@ class XMLEncoderAdapter(object):
                 self.text("False")
         elif o is None:
             pass
+        elif isinstance(o, NameArray):
+            if o.ArrayName is not None:
+                self.startElement(o.ArrayName)
+            for i in o.Array:
+                if o.ItemName is not None:
+                    self.startElement(o.ItemName)
+                if i:
+                    self.__encode(i, *args, **kwargs)
+                if o.ItemName is not None:
+                    self.endElement(o.ItemName)
+            if o.ArrayName is not None:
+                self.endElement(o.ArrayName)
         else:
             result = self.encoder.encode(o, *args, **kwargs)
 
