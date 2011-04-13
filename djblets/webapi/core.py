@@ -435,6 +435,15 @@ def get_registered_encoders():
     return __registered_encoders
 
 
+class NameArray():
+    ArrayName = ""
+    ItemName = ""
+    Array = []
+    def __init__(self, ArrayName, ItemName, Array, *args, **kwargs):
+        self.ArrayName = ArrayName
+        self.ItemName = ItemName
+        self.Array = Array
+
 # Backwards-compatibility
 #
 # This must be done after the classes in order to avoid a
